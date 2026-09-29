@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -20,11 +20,19 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Prepare Gradle
+        run: |
+          chmod +x gradlew
+          mkdir -p out
+
+      - name: Build JRE
+        run: ./gradlew jre_lwjgl3glfw:build --no-daemon
+
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew ZalithLauncher:assembleDebug -Darch=arm64
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ZalithLauncher-8key
-          path: '**/build/outputs/apk/**/*.apk'
+          name: ZalithLauncher-8key-arm64
+          path: ZalithLauncher/build/outputs/apk/debug/*
