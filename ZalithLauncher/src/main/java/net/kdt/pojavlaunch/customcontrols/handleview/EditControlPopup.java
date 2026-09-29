@@ -621,15 +621,30 @@ public class EditControlPopup {
     }
 
     private void updateKeycodeText(int index, int finalI) {
-        // Side note, spinner listeners are fired later than all the other ones.
-        // Meaning the internalChanges bool is useless here.
-        if (index < mSpecialArray.size()) {
-            mCurrentlyEditedButton.getProperties().keycodes[finalI] = mKeycodeSpinners[finalI].getSelectedItemPosition() - mSpecialArray.size();
-        } else {
-            mCurrentlyEditedButton.getProperties().keycodes[finalI] = EfficientAndroidLWJGLKeycode.getValueByIndex(mKeycodeSpinners[finalI].getSelectedItemPosition() - mSpecialArray.size());
-        }
-        mKeycodeTextviews[finalI].setText((String) mKeycodeSpinners[finalI].getSelectedItem());
+    // Prevent invalid keycode index from crashing the control editor.
+    if (finalI < 0
+            || finalI >= mCurrentlyEditedButton.getProperties().keycodes.length
+            || finalI >= mKeycodeSpinners.length
+            || finalI >= mKeycodeTextviews.length) {
+        return;
     }
+
+    // Side note, spinner listeners are fired later than all the other ones.
+    // Meaning the internalChanges bool is useless here.
+    if (index < mSpecialArray.size()) {
+        mCurrentlyEditedButton.getProperties().keycodes[finalI] =
+                mKeycodeSpinners[finalI].getSelectedItemPosition() - mSpecialArray.size();
+    } else {
+        mCurrentlyEditedButton.getProperties().keycodes[finalI] =
+                EfficientAndroidLWJGLKeycode.getValueByIndex(
+                        mKeycodeSpinners[finalI].getSelectedItemPosition()
+                                - mSpecialArray.size());
+    }
+
+    mKeycodeTextviews[finalI].setText(
+            (String) mKeycodeSpinners[finalI].getSelectedItem()
+    );
+}
 
     private float safeParseFloat(String string) {
         float out = -1; // -1
