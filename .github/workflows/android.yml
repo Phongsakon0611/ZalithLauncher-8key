@@ -1,6 +1,10 @@
-push: Build APK
+name: Build APK
 
-on: push
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -22,14 +26,15 @@ jobs:
           mkdir -p out
 
       - name: Build JRE
-        run: ./gradlew jre_lwjgl3glfw:build --no-daemon
+        run: |
+          ./gradlew jre_lwjgl3glfw:build --no-daemon
 
       - name: Build APK
-        run: ./gradlew ZalithLauncher:assembleDebug -Darch=arm64
+        run: |
+          ./gradlew ZalithLauncher:assembleDebug -Darch=all --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ZalithLauncher-8key-arm64
-          path: ZalithLauncher/build/outputs/apk/debug/*
-# trigger build
+          name: ZalithLauncher-APK
+          path: ZalithLauncher/build/outputs/apk/debug/*.apk
