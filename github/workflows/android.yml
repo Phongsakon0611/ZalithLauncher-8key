@@ -32,3 +32,4 @@ jobs:
         with:
           name: ZalithLauncher-8key-arm64
           path: ZalithLauncher/build/outputs/apk/debug/*
+# trigger build
